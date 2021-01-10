@@ -11,6 +11,8 @@ from picamera import PiCamera
 sensei = SenseHat()
 cam = PiCamera()
 
+# test skála
+
 ### Define variables
 path = Path(__file__).parent.resolve()
 dataFile = path/'data.csv'
