@@ -11,11 +11,6 @@ from picamera import PiCamera
 sensei = SenseHat()
 cam = PiCamera()
 
-<<<<<<< HEAD
-# test skála
-=======
-## test
->>>>>>> a05b235e26ac6d655e8a4295e675b6d2d7b55219
 
 ### Define variables
 path = Path(__file__).parent.resolve()
@@ -107,3 +102,4 @@ camera.start_preview()
 sleep(2)
 camera.capture("image.jpg")
 """
+# test skála
