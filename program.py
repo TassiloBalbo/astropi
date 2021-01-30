@@ -6,6 +6,7 @@ from datetime import datetime, timedelta
 from pathlib import Path
 from time import sleep
 from picamera import PiCamera
+smrdí ti pero
 
 ### Create instances
 sensei = SenseHat()
