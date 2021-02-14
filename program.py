@@ -23,6 +23,7 @@ nowTime = datetime.now()
 
 cam.resolution = (1296,972)
 imgCounter = 0 # used for numbering images
+dataUsed = 0
 
 name = "ISS (ZARYA)"
 line1 = "1 25544U 98067A   20316.41516162  .00001589  00000+0  36499-4 0  9995"
@@ -74,18 +75,25 @@ def capture(camera, image):
 	# capture the image
 	cam.capture(image)
 
+# Calculate data used
+def calcData(dataUsed):
+	for file in os.scandir(path):
+		if not file.path.endswith(".py"):
+			fileStats = os.stat(file)
+			dataUsed += fileStats.st_size
+	return round(dataUsed / (1024 * 1024), 2)
 
 ### Main loop ------------------------------------------------------
 
 while (nowTime < startTime + timedelta(seconds = 10)):
-	logger.info(f"New loop started #" + str(imgCounter))
+	logger.info(f"✅🚀 Loop #" + str(imgCounter) + " started")
 
 	# Harvest and write data
 	try:
 		writeData(dataFile, (datetime.now(), sensei.temperature, sensei.humidity, sensei.pressure))
-		logger.info(f"Data recorded")
+		logger.info(f"✅📜 Data recorded")
 	except Exception as e:
-		logger.error(f"Failed to record data: {e.__class__.__name__}: {e})")
+		logger.error(f"❌📜 Failed to record data: {e.__class__.__name__}: {e})")
 
 	# take a picture
 	try:
@@ -96,10 +104,12 @@ while (nowTime < startTime + timedelta(seconds = 10)):
 		else:
 			imgFile = "image" + str(imgCounter) + ".jpg"
 		capture(cam, imgFile)
-		logger.info(f"Captured image " + imgFile)
+		logger.info(f"✅📸 Captured image " + imgFile)
 	except Exception as e:
-		logger.error(f"Failed to capture image " + imgFile + " {e.__class__.__name__}: {e})")
+		logger.error(f"❌📸 Failed to capture image " + imgFile + " {e.__class__.__name__}: {e})")
 
-	logger.info(f"Loop #" + str(imgCounter) + " ended")
+	logger.info(f"✅🚀 Loop #" + str(imgCounter) + " ended")
 	imgCounter += 1
 	nowTime = datetime.now()
+
+logger.info(f"✅ Experiment finished. 📷 Recorded " + str(imgCounter) + " images. 📦 Used " + str(calcData(dataUsed)) + "MB of data. ✅✅")
