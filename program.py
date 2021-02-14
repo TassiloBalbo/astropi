@@ -6,6 +6,7 @@ from datetime import datetime, timedelta
 from pathlib import Path
 from time import sleep
 from picamera import PiCamera
+from logzero import logger, logfile
 
 ### Create instances -----------------------------------------------
 sensei = SenseHat()
@@ -14,13 +15,14 @@ cam = PiCamera()
 
 ### Define variables -----------------------------------------------
 path = Path(__file__).parent.resolve()
-dataFile = path/'data.csv'
+dataFile = path/"data.csv"
+logfile(path/"stratopi.log")
 
 startTime = datetime.now()
 nowTime = datetime.now()
 
 cam.resolution = (1296,972)
-imgCounter = 0
+imgCounter = 0 # used for numbering images
 
 name = "ISS (ZARYA)"
 line1 = "1 25544U 98067A   20316.41516162  .00001589  00000+0  36499-4 0  9995"
@@ -76,23 +78,28 @@ def capture(camera, image):
 ### Main loop ------------------------------------------------------
 
 while (nowTime < startTime + timedelta(seconds = 10)):
-	 # Harvest data
-	writeData(dataFile, (datetime.now(), sensei.temperature, sensei.humidity, sensei.pressure))
+	logger.info(f"New loop started #" + str(imgCounter))
 
-	iss.compute() # Get the lat/long values from ephem
+	# Harvest and write data
+	try:
+		writeData(dataFile, (datetime.now(), sensei.temperature, sensei.humidity, sensei.pressure))
+		logger.info(f"Data recorded")
+	except Exception as e:
+		logger.error(f"Failed to record data: {e.__class__.__name__}: {e})")
 
-	# convert the latitude and longitude to EXIF-appropriate representations
-	south, exif_latitude = convert(iss.sublat)
-	west, exif_longitude = convert(iss.sublong)
+	# take a picture
+	try:
+		if imgCounter < 10:
+			imgFile = "image00" + str(imgCounter) + ".jpg"
+		elif imgCounter < 100:
+			imgFile = "image0" + str(imgCounter) + ".jpg"
+		else:
+			imgFile = "image" + str(imgCounter) + ".jpg"
+		capture(cam, imgFile)
+		logger.info(f"Captured image " + imgFile)
+	except Exception as e:
+		logger.error(f"Failed to capture image " + imgFile + " {e.__class__.__name__}: {e})")
 
-	# set the EXIF tags specifying the current location
-	cam.exif_tags['GPS.GPSLatitude'] = exif_latitude
-	cam.exif_tags['GPS.GPSLatitudeRef'] = "S" if south else "N"
-	cam.exif_tags['GPS.GPSLongitude'] = exif_longitude
-	cam.exif_tags['GPS.GPSLongitudeRef'] = "W" if west else "E"
-
-	# Take photo
-	cam.capture("image" + str(imgCounter) + ".jpg")
-
+	logger.info(f"Loop #" + str(imgCounter) + " ended")
 	imgCounter += 1
 	nowTime = datetime.now()
