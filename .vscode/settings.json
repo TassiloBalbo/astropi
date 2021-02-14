@@ -1,0 +1,6 @@
+{
+	"git.enableSmartCommit": true,
+	"git.autofetch": true,
+	"editor.insertSpaces": false,
+	"editor.renderWhitespace": "all"
+}
