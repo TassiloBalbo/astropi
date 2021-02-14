@@ -8,5 +8,5 @@ from pathlib import Path
 path = Path(__file__).parent.resolve()
 
 for entry in os.scandir(path):
-	if (entry.path.endswith(".jpg") or entry.path.endswith(".jpg") or entry.path.endswith(".csv") and entry.is_file()):
+	if (entry.path.endswith(".jpg") or entry.path.endswith(".jpg") or entry.path.endswith(".csv") or entry.path.endswith(".log") and entry.is_file()):
 		os.remove(entry)
