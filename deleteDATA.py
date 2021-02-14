@@ -1,6 +1,7 @@
 # 🔧 script for removing captured images and data, used for testing
-# scp deleteDATA.py pi@4.2.0.224:~/bigbrain
-# scp program.py pi@4.2.0.224:~/bigbrain
+# scp filip@4.2.0.169:~/code/astropi/deleteDATA.py ~/stratopi
+# scp filip@4.2.0.169:~/code/astropi/program.py ~/stratopi
+# scp *.jpg filip@4.2.0.169:~/code/astropi/data/
 
 import os
 from pathlib import Path
