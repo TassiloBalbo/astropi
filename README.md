@@ -6,5 +6,5 @@ Code for the AstroPi competition, brought to you by ESA. Made by team StratoPi ð
 
 - [ ] filter dark images
 - [ ] improve used data calculation?
-- [ ] ensure GPS tagging works
+- [x] ensure GPS tagging works
 - [ ] test for 3 full hours
